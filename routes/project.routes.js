@@ -7,17 +7,16 @@ const Task = require("../models/Task.model");
 // POST /api/projects - Creates a new project
 router.post("/projects", async (req, res, next) => {
   try {
-    const { name, description, steps, deadline, frequency } = req.body;
+    const { name, description, user, deadlineProject, completionRate } = req.body;
 
     const project = new Project({
       name,
       description,
-      steps,
-      todos: [],
-      documents: [],
-      deadline,
-      frequency,
-      completionRate: 0,
+      user,
+      todos: [], // Nenhum item de "todos" é criado aqui, pois será populado ao criar tarefas relacionadas
+      documents: [], // Nenhum item de "documents" é criado aqui, pode ser populado ao adicionar documentos futuramente
+      deadlineProject,
+      completionRate: completionRate || 0, // Valor padrão para completionRate é 0, se não for fornecido no body da requisição
     });
 
     await project.save();
@@ -31,7 +30,7 @@ router.post("/projects", async (req, res, next) => {
 // GET /api/projects - Retrieves all of the projects
 router.get("/projects", async (req, res, next) => {
   try {
-    const allProjects = await Project.find().populate("tasks");
+    const allProjects = await Project.find().populate("todos");
 
     res.json(allProjects);
   } catch (error) {
@@ -49,7 +48,7 @@ router.get("/projects/:projectId", async (req, res, next) => {
       return;
     }
 
-    const project = await Project.findById(projectId).populate("tasks");
+    const project = await Project.findById(projectId).populate("todos");
 
     if (!project) {
       res.status(404).json({ message: "Project not found" });
@@ -115,7 +114,6 @@ router.delete("/projects/:projectId", async (req, res, next) => {
 });
 
 module.exports = router;
-
 
 // const express = require("express");
 // const router = express.Router();
