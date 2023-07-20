@@ -3,3 +3,8 @@ http://localhost:5005/auth/login
 http://localhost:5005/
 http://localhost:5005/api/projects (need the token)
 http://localhost:5005/api/projects/:projectId (need the token)
+http://localhost:5005/api/dailylogs (need the token)
+http://localhost:5005/api/dailylogs/:logId (need the token)
+http://localhost:5005/api/tasks (need the token)
+http://localhost:5005/api/tasks/:taskId (need the token)
+http://localhost:5005/api/openai

@@ -1,7 +1,7 @@
-require("dotenv/config");
 require("./db");
+require("dotenv/config");
 const express = require("express");
-
+const { getOpenAIResponse } = require("./openai");
 const { isAuthenticated } = require("./middleware/jwt.middleware");
 
 const app = express();
@@ -15,7 +15,7 @@ const projectRouter = require("./routes/project.routes");
 app.use("/api", isAuthenticated, projectRouter);
 
 const taskRouter = require("./routes/task.routes");
-app.use("/api", isAuthenticated, taskRouter);
+app.use("/api", isAuthenticated,  taskRouter);
 
 const authRouter = require("./routes/auth.routes");
 app.use("/auth", authRouter);
@@ -23,6 +23,51 @@ app.use("/auth", authRouter);
 const dailylogsRouter = require("./routes/dailylogs.routes");
 app.use("/api", isAuthenticated, dailylogsRouter);
 
+app.get("/api/openai", async (req, res) => {
+  const question = req.query.question;
+
+  try {
+    const response = await getOpenAIResponse(question);
+    res.json(response);
+    console.log(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error with OpenAI" });
+  }
+});
+
 require("./error-handling")(app);
 
 module.exports = app;
+
+
+// require("dotenv/config");
+// require("./db");
+// const express = require("express");
+// const { getOpenAIResponse } = require("./openai");
+
+
+// const { isAuthenticated } = require("./middleware/jwt.middleware");
+// // const { getOpenAIResponse } = require("./openai"); // Importe a função do arquivo openai.js
+
+// const app = express();
+// require("./config")(app);
+
+// // 👇 Start handling routes here
+// const allRoutes = require("./routes/index");
+// app.use("/", allRoutes);
+
+// const projectRouter = require("./routes/project.routes");
+// app.use("/api", isAuthenticated, projectRouter);
+
+// const taskRouter = require("./routes/task.routes");
+// app.use("/api", isAuthenticated, taskRouter);
+
+// const authRouter = require("./routes/auth.routes");
+// app.use("/auth", authRouter);
+
+// const dailylogsRouter = require("./routes/dailylogs.routes");
+// app.use("/api", isAuthenticated, dailylogsRouter);
+
+// require("./error-handling")(app);
+
+// module.exports = app;
