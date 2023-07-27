@@ -1,123 +1,35 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
-const Task = require("../models/Task.model");
-const Project = require("../models/Project.model");
+const taskController = require('../controllers/taskController');
 
-//  POST /api/tasks  -  Creates a new task
-router.post("/tasks", (req, res, next) => {
-  console.log("Received request body:", req.body);
-  const { title, description, frequency, project, status, deadline, parentTask, subTasks } = req.body;
+// Rota para criar uma nova tarefa
+router.post('/tasks', taskController.createTasks);
 
-  Task.create({ title, description, frequency, project, status, deadline, parentTask, subTasks })
-    .then((newTask) => {
-      // Find the project by ID and push the new task's ID to its 'todos' array
-      return Project.findByIdAndUpdate(project, { $push: { todos: newTask._id } }, { new: true });
-    })
-    .then((response) => res.json(response))
-    .catch((err) => res.status(500).json({ error: "Failed to create a new task", err }));
-});
+// Rota para obter todas as tarefas de um projeto específico
+router.get('/tasks/:projectId', taskController.getTasksByProject);
 
-//  GET /api/tasks/:taskId  - Retrieves a specific task by id
-router.get("/tasks/:taskId", (req, res, next) => {
-  const { taskId } = req.params;
+// Rota para obter uma task 
+router.get('/tasks/:taskId', taskController.getTaskById);
 
-  Task.findById(taskId)
-    .then((task) => res.json(task))
-    .catch((error) => res.status(500).json({ error: "Failed to retrieve the task", error }));
-});
+// Rota para editar uma task
+router.put('/tasks/:taskId', taskController.editTask);
 
-// PUT  /api/tasks/:taskId  - Updates a specific task by id
-router.put("/tasks/:taskId", (req, res, next) => {
-  const { taskId } = req.params;
+// Rota para excluir uma task
+router.delete('/tasks/:taskId', taskController.deleteTask);
 
-  if (!mongoose.Types.ObjectId.isValid(taskId)) {
-    res.status(400).json({ message: "Specified id is not valid" });
-    return;
-  }
+// Rota para adicionar uma nova subtask a uma task
+router.post('/tasks/:taskId/subtasks', taskController.addSubTask);
 
-  Task.findByIdAndUpdate(taskId, req.body, { new: true })
-    .then((updatedTask) => res.json(updatedTask))
-    .catch((err) => res.status(500).json({ error: "Failed to update the task", err }));
-});
+// Rota para editar uma subtask
+router.put('/tasks/:taskId/subtasks/:subTaskId', taskController.editSubTask);
 
-//  DELETE /api/tasks/:taskId  - Deletes a specific task by id
-router.delete("/tasks/:taskId", (req, res, next) => {
-  const { taskId } = req.params;
+// Rota para excluir uma subtask
+router.delete('/tasks/:taskId/subtasks/:subTaskId', taskController.deleteSubTask);
 
-  if (!mongoose.Types.ObjectId.isValid(taskId)) {
-    res.status(400).json({ message: "Specified id is not valid" });
-    return;
-  }
+// Rota para adicionar uma task por vez
+router.post("/projects/:projectId/tasks", taskController.addTaskToProject);
 
-  Task.findByIdAndRemove(taskId)
-    .then(() =>
-      res.json({ message: `Task with ${taskId} is removed successfully.` })
-    )
-    .catch((error) => res.status(500).json({ error: "Failed to delete the task", error }));
-});
+// Rota para obter as tarefas com base na data selecionada
+router.get('/projects/:projectId/tasks', taskController.getTasksByDeadlineAndProject);
 
 module.exports = router;
-
-
-// const express = require("express");
-// const router = express.Router();
-// const mongoose = require("mongoose");
-
-// const Task = require("../models/Task.model");
-// const Project = require("../models/Project.model");
-
-// //  POST /api/tasks  -  Creates a new task
-// router.post("/tasks", (req, res, next) => {
-//   const { title, description, frequency, project, status, deadline, parentTask, subTasks } = req.body;
-
-//   Task.create({ title, description, frequency, projectId: project, status, deadline, parentTask, subTasks })
-//     .then((newTask) => {
-//       return Project.findByIdAndUpdate(projectId, {
-//         $push: { tasks: newTask._id },
-//       });
-//     })
-//     .then((response) => res.json(response))
-//     .catch((err) => res.json(err));
-// });
-
-// //  GET /api/tasks/:taskId  - Retrieves a specific task by id
-// router.get("/tasks/:taskId", (req, res, next) => {
-//   const { taskId } = req.params;
-
-//   Task.findById(taskId)
-//     .then((task) => res.json(task))
-//     .catch((error) => res.json(error));
-// });
-
-// // PUT  /api/tasks/:taskId  - Updates a specific task by id
-// router.put("/tasks/:taskId", (req, res, next) => {
-//   const { taskId } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(taskId)) {
-//     res.status(400).json({ message: "Specified id is not valid" });
-//     return;
-//   }
-
-//   Task.findByIdAndUpdate(taskId, req.body, { new: true })
-//     .then((updatedTask) => res.json(updatedTask))
-//     .catch((err) => res.json(err));
-// });
-
-// //  DELETE /api/tasks/:taskId  - Deletes a specific task by id
-// router.delete("/tasks/:taskId", (req, res, next) => {
-//   const { taskId } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(taskId)) {
-//     res.status(400).json({ message: "Specified id is not valid" });
-//     return;
-//   }
-
-//   Task.findByIdAndRemove(taskId)
-//     .then(() =>
-//       res.json({ message: `Task with ${taskId} is removed successfully.` })
-//     )
-//     .catch((error) => res.json(error));
-// });
-
-// module.exports = router;
