@@ -20,9 +20,6 @@ app.use("/api", isAuthenticated, taskRouter);
 const authRouter = require("./routes/auth.routes");
 app.use("/auth", authRouter);
 
-const dailylogsRouter = require("./routes/dailylogs.routes");
-app.use("/api", isAuthenticated, dailylogsRouter);
-
 const dreamAssistantRouter = require("./routes/dreamAssistant.routes");
 app.use("/api", isAuthenticated, dreamAssistantRouter);
 
