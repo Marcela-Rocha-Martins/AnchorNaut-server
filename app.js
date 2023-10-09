@@ -5,7 +5,10 @@ const express = require("express");
 const { isAuthenticated } = require("./middleware/jwt.middleware");
 
 const app = express();
-app.use(express.json()); // Adicionar este middleware para analisar JSON no corpo das requisições
+
+app.use(express());
+require("./config")(app);
+ // Adicionar este middleware para analisar JSON no corpo das requisições
 
 // Start handling routes here
 const allRoutes = require("./routes/index");

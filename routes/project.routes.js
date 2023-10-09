@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const projectController = require("../controllers/projectController");
-const uploadMiddleware = require("../config/cloudinary.config"); // Importar o middleware multer configurado
+const uploadMiddleware = require("../config/cloudinary.config"); 
 
 // Route to create a project
 router.post("/projects", projectController.createProject);
@@ -20,8 +20,5 @@ router.delete("/projects/:id", projectController.deleteProjectById);
 
 // Rota para upload de arquivo 
 router.post("/projects/:projectId/documents", uploadMiddleware.single("documents"), projectController.uploadDocument);
-
-// Rota para obter todas as fotos do moodboard de um projeto
-router.get("/projects/:projectId/documents", projectController.getAllProjectDocuments);
 
 module.exports = router;

@@ -1,22 +1,20 @@
-// controllers/projectController.js
 const Project = require("../models/Project.model");
+const { Task, SubTask } = require("../models/Task.model");
+
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
-
 
 // Controller function to create a project
 exports.createProject = async (req, res) => {
   try {
-    // Extrair o projectName e tasks do corpo da solicitação (req.body)
-    const { projectName, tasksId } = req.body;
+    const { projectName, tasksId, user } = req.body;
 
-    // Crie o novo projeto no banco de dados
     const newProject = await Project.create({
       projectName: projectName,
-      tasks: tasksId, // Aqui, as tasks serão passadas diretamente do frontend
+      tasks: tasksId,
+      user: user, // Associate the project with the user ID
     });
 
-    // Resposta de sucesso com o novo projeto criado
     return res.status(201).json(newProject);
   } catch (error) {
     console.error("Erro ao criar o projeto:", error);
@@ -27,7 +25,9 @@ exports.createProject = async (req, res) => {
 // Controller function to get a list of all projects
 exports.getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find().populate('tasks');
+    const userId = req.payload._id; // Obter o userId do objeto req.payload
+
+    const projects = await Project.find({ user: userId }).populate("tasks");
     res.json(projects);
   } catch (error) {
     console.error("Erro ao obter a lista de projetos:", error);
@@ -39,7 +39,14 @@ exports.getAllProjects = async (req, res) => {
 exports.getProjectById = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId)
+      .populate({
+        path: 'tasks',
+        populate: {
+          path: 'subTasks',
+          model: 'SubTask',
+        },
+      });
     if (!project) {
       return res.status(404).json({ error: "Projeto não encontrado." });
     }
