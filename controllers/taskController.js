@@ -6,18 +6,19 @@ exports.createTasks = async (req, res) => {
   try {
     const formattedTasks = req.body;
     const tasks = [];
-
+    const projectId = req.params.projectId;
    
     for (const formattedTask of formattedTasks) {
       const task = new Task({
         task: formattedTask.task,
         estimatedTime: formattedTask.estimatedTime,
-        project: formattedTask.project,
+        project: projectId,
         status: formattedTask.status,
         deadline: formattedTask.deadline,
       });
 
-     
+     console.log(formattedTask, "formattedTask no backend");
+
       for (const formattedSubTask of formattedTask.subtasks) {
         const subTask = new SubTask({
           subTask: formattedSubTask.subtask,
@@ -33,7 +34,6 @@ exports.createTasks = async (req, res) => {
       await task.save();
       tasks.push(task);
     }
-
 
     const taskIds = tasks.map((task) => task._id);
 
@@ -52,7 +52,6 @@ exports.addTaskToProject = async (req, res) => {
   try {
     const projectId = req.params.projectId;
     const formattedTask = req.body;
-
     const task = new Task({
       task: formattedTask.task,
       estimatedTime: formattedTask.estimatedTime,
@@ -62,8 +61,13 @@ exports.addTaskToProject = async (req, res) => {
     });
 
     await task.save();
+    const taskIds = [task._id];
+    await Project.findByIdAndUpdate(projectId, {
+      $push: { tasks: { $each: taskIds } },
+    });
 
     res.status(201).json(task);
+    console.log(res.status, 'status response')
   } catch (error) {
     console.error(error);
     res.status(500).send("Ocorreu um erro ao criar a tarefa.");
