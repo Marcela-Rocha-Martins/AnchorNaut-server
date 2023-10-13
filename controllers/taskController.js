@@ -165,7 +165,6 @@ exports.addSubTask = async (req, res) => {
       return res.status(404).send("Tarefa não encontrada.");
     }
 
-
     const newSubTask = new SubTask({
       subTask,
       estimatedTime: estimatedTime || "null",

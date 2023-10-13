@@ -2,34 +2,34 @@ const express = require('express');
 const router = express.Router();
 const taskController = require('../controllers/taskController');
 
-// Rota para criar uma nova tarefa
+// Route to create a new task
 router.post('/tasks', taskController.createTasks);
 
-// Rota para obter todas as tarefas de um projeto específico
+// Route to get all tasks for a specific project
 router.get('/tasks/:projectId', taskController.getTasksByProject);
 
-// Rota para obter uma task 
+// Route to get a single task by its ID
 router.get('/tasks/:taskId', taskController.getTaskById);
 
-// Rota para editar uma task
+// Route to edit a task
 router.put('/tasks/:taskId', taskController.editTask);
 
-// Rota para excluir uma task
+// Route to delete a task
 router.delete('/tasks/:taskId', taskController.deleteTask);
 
-// Rota para adicionar uma nova subtask a uma task
+// Route to add a new subtask to a task
 router.post('/tasks/:taskId/subtasks', taskController.addSubTask);
 
-// Rota para editar uma subtask
+// Route to edit a subtask
 router.put('/tasks/:taskId/subtasks/:subTaskId', taskController.editSubTask);
 
-// Rota para excluir uma subtask
+// Route to delete a subtask
 router.delete('/tasks/:taskId/subtasks/:subTaskId', taskController.deleteSubTask);
 
-// Rota para adicionar uma task por vez
+// Route to add a task to a project one at a time
 router.post("/projects/:projectId/tasks", taskController.addTaskToProject);
 
-// Rota para obter as tarefas com base na data selecionada
+// Route to get tasks based on selected date and project
 router.get('/projects/:projectId/tasks', taskController.getTasksByDeadlineAndProject);
 
 module.exports = router;
