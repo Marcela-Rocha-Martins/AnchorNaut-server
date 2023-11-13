@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
 
-const FRONTEND_URL = process.env.ORIGIN;
+const FRONTEND_URL = "https://anchornaut.netlify.app";
 
 // Middleware configuration
 module.exports = (app) => {
@@ -33,4 +33,8 @@ module.exports = (app) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something went wrong!");
+  });
 };
