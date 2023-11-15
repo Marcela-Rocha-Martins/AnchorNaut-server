@@ -1,7 +1,6 @@
 const Project = require("../models/Project.model");
 const { Task, SubTask } = require("../models/Task.model");
 
-const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 
 // Controller function to create a project
@@ -97,52 +96,5 @@ exports.deleteProjectById = async (req, res) => {
   } catch (error) {
     console.error("Erro ao deletar o projeto:", error);
     res.status(500).json({ error: "Erro ao deletar o projeto." });
-  }
-};
-
-// Upload a photo to a project using Cloudinary
-exports.uploadDocument = async (req, res) => {
-  const { projectId } = req.params;
-
-  try {
-    const project = await Project.findById(projectId);
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
-    }
-
-    // Check if a file was uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    // Upload the file to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
-
-    // Save the public URL of the uploaded photo to the project's documents array
-    project.documents.push(result.secure_url);
-    await project.save();
-
-    res.status(200).json({ message: "Document uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading document:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// Controller function to get all project documents (photos) by project ID
-exports.getAllProjectDocuments = async (req, res) => {
-  try {
-    const projectId = req.params.projectId;
-    const project = await Project.findById(projectId);
-
-    if (!project) {
-      return res.status(404).json({ error: "Projeto não encontrado." });
-    }
-
-    // Retorna todas as fotos do moodboard do projeto
-    res.json(project.documents);
-  } catch (error) {
-    console.error("Erro ao obter as fotos do projeto:", error);
-    res.status(500).json({ error: "Erro ao obter as fotos do projeto." });
   }
 };

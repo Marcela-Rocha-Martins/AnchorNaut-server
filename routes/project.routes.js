@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const projectController = require("../controllers/projectController");
-const uploadMiddleware = require("../config/cloudinary.config"); 
 
 // Route to create a project
 router.post("/projects", projectController.createProject);
@@ -17,8 +16,5 @@ router.put("/projects/:id", projectController.updateProjectById);
 
 // Rota para deletar um projeto pelo ID
 router.delete("/projects/:id", projectController.deleteProjectById);
-
-// Rota para upload de arquivo 
-router.post("/projects/:projectId/documents", uploadMiddleware.single("documents"), projectController.uploadDocument);
 
 module.exports = router;
