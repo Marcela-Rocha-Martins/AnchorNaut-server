@@ -24,7 +24,7 @@ exports.createProject = async (req, res) => {
 // Controller function to get a list of all projects
 exports.getAllProjects = async (req, res) => {
   try {
-    const userId = req.payload._id; // Obter o userId do objeto req.payload
+    const userId = req.payload._id; 
 
     const projects = await Project.find({ user: userId }).populate("tasks");
     res.json(projects);
