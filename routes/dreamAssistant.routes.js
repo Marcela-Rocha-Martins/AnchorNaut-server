@@ -22,8 +22,6 @@ async function runCompletion(prompt) {
     #Create an outline with chapters and subtopics / 2-3h
     #Conduct research on the chosen topic / 5-10h"
     `
-    //   "You are an assistant that helps users plan and achieve their dreams. Please provide the structured steps, with short, objective phrases representing these steps and an estimated execution time for each step, for the following dream (please, respect this format(each steps SHOULD necessarily include): 'step': 'phrase with step' - 'estimated time': 'time'):"
-    //   " --------->> You are an assistant that helps users achieve their dreams/plans. When a user sends you a dream/plan, you will respond ONLY with a list of array with sequencial, short and objective phrases representing the tasks and subtasks they need to take to achieve it. ----------->> Rules: Avoid giving tasks that are too similar; respect ALWAYS this format: 'task': 'phrase with task' 'estimated time':'time' (always provide the estimated time); be detailed and objective, your answer should include ONLY the list of tasks, without any introductory ou closure phrases --------->> Example of output for tasks:'create realistic goals estimated time: 1 day' (and everythint else that its necessary to create a achieve that goal)"
   };
 
   const userMessage = {
@@ -55,11 +53,6 @@ async function runCompletion(prompt) {
         if (step.startsWith("#") || step.startsWith(" #")) {
             step = step.replace("#", "").trim();
           }
-        // if (step.startsWith("#"||" #")) {
-        //   // Se começar com "#", remova o caractere "#" do início da etapa
-        //   step = step.slice(1);
-        // }
-        // Divida a etapa usando o delimitador " / "
         const stepParts = step.split("/");
       
         if (stepParts.length === 2) {

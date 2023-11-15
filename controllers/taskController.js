@@ -7,7 +7,7 @@ exports.createTasks = async (req, res) => {
     const formattedTasks = req.body;
     const tasks = [];
     const projectId = req.params.projectId;
-   
+
     for (const formattedTask of formattedTasks) {
       const task = new Task({
         task: formattedTask.task,
@@ -17,7 +17,7 @@ exports.createTasks = async (req, res) => {
         deadline: formattedTask.deadline,
       });
 
-     console.log(formattedTask, "formattedTask no backend");
+      console.log(formattedTask, "formattedTask no backend");
 
       for (const formattedSubTask of formattedTask.subtasks) {
         const subTask = new SubTask({
@@ -67,7 +67,7 @@ exports.addTaskToProject = async (req, res) => {
     });
 
     res.status(201).json(task);
-    console.log(res.status, 'status response')
+    console.log(res.status, "status response");
   } catch (error) {
     console.error(error);
     res.status(500).send("Ocorreu um erro ao criar a tarefa.");
@@ -98,11 +98,9 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-
 exports.editTask = async (req, res) => {
   try {
     const taskId = req.params.taskId;
-
 
     const existingTask = await Task.findById(taskId);
 
@@ -110,7 +108,6 @@ exports.editTask = async (req, res) => {
       return res.status(404).send("Tarefa não encontrada.");
     }
 
-   
     if (req.body.task) {
       existingTask.task = req.body.task;
     }
@@ -133,7 +130,6 @@ exports.editTask = async (req, res) => {
   }
 };
 
-
 exports.deleteTask = async (req, res) => {
   try {
     const taskId = req.params.taskId;
@@ -143,7 +139,6 @@ exports.deleteTask = async (req, res) => {
     if (!existingTask) {
       return res.status(404).send("Tarefa não encontrada.");
     }
-
 
     await existingTask.remove();
 
@@ -175,7 +170,6 @@ exports.addSubTask = async (req, res) => {
     await newSubTask.save();
     existingTask.subTasks.push(newSubTask._id);
 
-
     await existingTask.save();
 
     res.status(201).send("Subtarefa adicionada com sucesso!");
@@ -185,11 +179,9 @@ exports.addSubTask = async (req, res) => {
   }
 };
 
-
 exports.editSubTask = async (req, res) => {
   try {
     const subTaskId = req.params.subTaskId;
-
 
     const existingSubTask = await SubTask.findById(subTaskId);
 
@@ -238,7 +230,6 @@ exports.deleteSubTask = async (req, res) => {
   }
 };
 
-
 exports.getTasksByDeadlineAndProject = async (req, res) => {
   try {
     const projectId = req.params.projectId;
@@ -270,7 +261,8 @@ exports.getTasksByDeadlineAndProject = async (req, res) => {
     res.status(200).json(tasks);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching tasks by deadline within the project.");
+    res
+      .status(500)
+      .send("Error fetching tasks by deadline within the project.");
   }
 };
-
